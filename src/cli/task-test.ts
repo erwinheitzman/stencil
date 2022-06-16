@@ -1,13 +1,12 @@
-import type { Config, TestingRunOptions } from '../declarations';
+import type { InternalStrictConfig, TestingRunOptions } from '../declarations';
 import { IS_NODE_ENV } from '../compiler/sys/environment';
 
 /**
  * Initiates running tests against a Stencil project
  * @param config the Stencil configuration to use while running tests
  */
-export const taskTest = async (config: Config): Promise<void> => {
+export const taskTest = async (config: InternalStrictConfig): Promise<void> => {
   // TODO(NOW): Remove this once we have a better sense of config validation
-  config.flags = config.flags ?? {};
   config.testing = config.testing ?? {};
   if (!config.sys?.lazyRequire) {
     throw new Error('sys was not defined');
