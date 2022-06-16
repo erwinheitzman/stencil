@@ -1,7 +1,11 @@
 import type { Config, TestingRunOptions } from '../declarations';
 import { IS_NODE_ENV } from '../compiler/sys/environment';
 
-export const taskTest = async (config: Config) => {
+/**
+ * Initiates running tests against a Stencil project
+ * @param config the Stencil configuration to use while running tests
+ */
+export const taskTest = async (config: Config) : Promise<void> => {
   if (!IS_NODE_ENV) {
     config.logger.error(`"test" command is currently only implemented for a NodeJS environment`);
     return config.sys.exit(1);
