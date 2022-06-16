@@ -6,6 +6,20 @@ import { IS_NODE_ENV } from '../compiler/sys/environment';
  * @param config the Stencil configuration to use while running tests
  */
 export const taskTest = async (config: Config): Promise<void> => {
+  // TODO(NOW): Remove this once we have a better sense of config validation
+  config.flags = config.flags ?? {};
+  config.testing = config.testing ?? {};
+  if (!config.sys?.lazyRequire) {
+    throw new Error('sys was not defined');
+  }
+  if (!config.rootDir) {
+    return config.sys.exit(1);
+  }
+  if (!config.logger) {
+    return config.sys.exit(1);
+  }
+  //////////////////////////////////////////////////////////////////////////
+
   if (!IS_NODE_ENV) {
     config.logger.error(`"test" command is currently only implemented for a NodeJS environment`);
     return config.sys.exit(1);
