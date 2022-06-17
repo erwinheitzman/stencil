@@ -6,6 +6,7 @@ import type {
   Config,
   InternalStrictConfig,
   Module,
+  UnvalidatedConfig,
 } from '@stencil/core/internal';
 import { BuildContext } from '../compiler/build/build-ctx';
 import { Cache as CompilerCache } from '../compiler/cache';
@@ -18,7 +19,13 @@ import path from 'path';
 import { noop } from '@utils';
 import { buildEvents } from '../compiler/events';
 
-export function mockConfig(sys?: CompilerSystem): InternalStrictConfig {
+export function mockInternalStrictConfig(sys?: CompilerSystem): InternalStrictConfig {
+  const baseConfig = mockConfig(sys);
+
+  return { ...baseConfig, flags: {} };
+}
+
+export function mockConfig(sys?: CompilerSystem): UnvalidatedConfig {
   const rootDir = path.resolve('/');
 
   if (!sys) {
