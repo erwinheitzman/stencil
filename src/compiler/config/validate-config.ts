@@ -13,6 +13,20 @@ import { validateTesting } from './validate-testing';
 import { validateWorkers } from './validate-workers';
 
 /**
+ * Represents the results of validating a previously unvalidated configuration
+ */
+type ConfigValidationResults = {
+  /**
+   * The validated configuration, with well-known default values set if they weren't previously provided
+   */
+  config: InternalStrictConfig;
+  /**
+   * A collection of errors and warnings that occurred during the configuration validation process
+   */
+  diagnostics: Diagnostic[];
+}
+
+/**
  * Validate a Config object, ensuring that all its field are present and
  * consistent with our expectations. This function transforms an
  * `UnvalidatedConfig` to a `Config`.
@@ -20,12 +34,7 @@ import { validateWorkers } from './validate-workers';
  * @param userConfig an unvalidated config that we've gotten from a user
  * @returns an object with config and diagnostics props
  */
-export const validateConfig = (
-  userConfig: UnvalidatedConfig = {}
-): {
-  config: InternalStrictConfig;
-  diagnostics: Diagnostic[];
-} => {
+export const validateConfig = (userConfig: UnvalidatedConfig = {}): ConfigValidationResults => {
   const config = Object.assign({}, userConfig || {}); // not positive it's json safe
   const diagnostics: Diagnostic[] = [];
 
