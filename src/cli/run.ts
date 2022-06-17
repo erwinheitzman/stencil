@@ -146,7 +146,7 @@ export const runTask = async (
       break;
 
     case 'prerender':
-      await taskPrerender(coreCompiler, config);
+      await taskPrerender(coreCompiler, strictConfig);
       break;
 
     case 'serve':
