@@ -54,7 +54,7 @@ export async function readJson(sys: d.CompilerSystem, path: string): Promise<any
  * @param config The config passed into the Stencil command
  * @returns true if --debug has been passed, otherwise false
  */
-export function hasDebug(config: d.Config) {
+export function hasDebug(config: d.InternalStrictConfig) {
   return config.flags.debug;
 }
 
@@ -63,6 +63,6 @@ export function hasDebug(config: d.Config) {
  * @param config The config passed into the Stencil command
  * @returns true if both --debug and --verbose have been passed, otherwise false
  */
-export function hasVerbose(config: d.Config) {
+export function hasVerbose(config: d.InternalStrictConfig) {
   return config.flags.verbose && hasDebug(config);
 }
