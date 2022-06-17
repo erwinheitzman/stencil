@@ -60,7 +60,6 @@ export const loadConfig = async (init: LoadConfigInit = {}): Promise<LoadConfigR
       // merge the user's config object into their loaded config file
       configPath = loadedConfigFile.configPath;
       unknownConfig.config = { ...loadedConfigFile, ...config };
-      unknownConfig.config.flags = unknownConfig.config.flags ?? {};
       unknownConfig.config.configPath = configPath;
       unknownConfig.config.rootDir = normalizePath(dirname(configPath));
     } else {
