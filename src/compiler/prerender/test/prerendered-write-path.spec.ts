@@ -9,7 +9,7 @@ describe('prerender-utils', () => {
 
   describe('getWriteFilePathFromUrlPath', () => {
     let manager: d.PrerenderManager;
-    let config: d.Config;
+    let config: d.InternalStrictConfig;
 
     beforeEach(() => {
       config = mockConfig();
