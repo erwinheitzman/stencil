@@ -133,7 +133,7 @@ export const runTask = async (
       break;
 
     case 'docs':
-      await taskDocs(coreCompiler, config);
+      await taskDocs(coreCompiler, strictConfig);
       break;
 
     case 'generate':
