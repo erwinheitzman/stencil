@@ -15,6 +15,7 @@ import { taskServe } from './task-serve';
 import { taskTest } from './task-test';
 import { taskTelemetry } from './task-telemetry';
 import { telemetryAction } from './telemetry/telemetry';
+import { InternalStrictConfig } from '../declarations';
 
 export const run = async (init: d.CliInitOptions) => {
   const { args, logger, sys } = init;
@@ -118,7 +119,12 @@ export const runTask = async (
   sys?: d.CompilerSystem
 ) => {
   config.flags = config.flags || { task };
+  // TODO: Extract to fn
+  // this is a total hack, but we know that we have a flags object now...
+  const strictConfig = config as InternalStrictConfig;
+
   config.outputTargets = config.outputTargets || [];
+  strictConfig.outputTargets = strictConfig.outputTargets || [];
 
   switch (task) {
     case 'build':
@@ -154,7 +160,7 @@ export const runTask = async (
       break;
 
     case 'test':
-      await taskTest(config);
+      await taskTest(strictConfig);
       break;
 
     case 'version':
