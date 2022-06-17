@@ -24,7 +24,7 @@ type ConfigValidationResults = {
    * A collection of errors and warnings that occurred during the configuration validation process
    */
   diagnostics: Diagnostic[];
-}
+};
 
 /**
  * Validate a Config object, ensuring that all its field are present and

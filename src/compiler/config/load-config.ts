@@ -56,7 +56,7 @@ export const loadConfig = async (init: LoadConfigInit = {}): Promise<LoadConfigR
       return results;
     }
 
-    if (loadedConfigFile != null) {
+    if (loadedConfigFile !== null) {
       // merge the user's config object into their loaded config file
       configPath = loadedConfigFile.configPath;
       unknownConfig.config = { ...loadedConfigFile, ...config };
@@ -65,7 +65,6 @@ export const loadConfig = async (init: LoadConfigInit = {}): Promise<LoadConfigR
       unknownConfig.config.rootDir = normalizePath(dirname(configPath));
     } else {
       // no stencil.config.ts or .js file, which is fine
-      // #0CJS ¯\_(ツ)_/¯
       unknownConfig.config = { ...config };
       unknownConfig.config.configPath = null;
       unknownConfig.config.rootDir = normalizePath(sys.getCurrentDirectory());
