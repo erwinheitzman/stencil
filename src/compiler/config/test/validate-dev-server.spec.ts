@@ -4,7 +4,7 @@ import { validateConfig } from '../validate-config';
 import path from 'path';
 
 describe('validateDevServer', () => {
-  let inputConfig: d.Config;
+  let inputConfig: d.UnvalidatedConfig;
   const root = path.resolve('/');
 
   beforeEach(() => {
