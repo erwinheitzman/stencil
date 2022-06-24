@@ -22,7 +22,8 @@ import { buildEvents } from '../compiler/events';
 export function mockInternalStrictConfig(sys?: CompilerSystem): InternalStrictConfig {
   const baseConfig = mockConfig(sys);
 
-  return { ...baseConfig, flags: {} };
+  // TODO: We have to set this on two levels :yuck:
+  return { ...baseConfig, flags: {}, logger: mockLogger() };
 }
 
 export function mockConfig(sys?: CompilerSystem): UnvalidatedConfig {
