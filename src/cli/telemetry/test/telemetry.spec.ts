@@ -8,15 +8,20 @@ import { anonymizeConfigForTelemetry } from '../telemetry';
 import { DIST, DIST_CUSTOM_ELEMENTS, DIST_HYDRATE_SCRIPT, WWW } from '../../../compiler/output-targets/output-utils';
 
 describe('telemetryBuildFinishedAction', () => {
-  const config: d.InternalStrictConfig = {
-    outputTargets: [],
-    flags: {
-      args: [],
-    },
-  };
+  let config: d.InternalStrictConfig;
+  let sys: d.CompilerSystem;
 
-  const logger = mockLogger();
-  const sys = createSystem();
+  beforeEach(() => {
+    config = {
+      outputTargets: [],
+      flags: {
+        args: [],
+      },
+      logger: mockLogger(),
+    };
+
+    sys = createSystem();
+  });
 
   it('issues a network request when complete', async () => {
     const spyShouldTrack = jest.spyOn(shouldTrack, 'shouldTrack');
@@ -31,7 +36,7 @@ describe('telemetryBuildFinishedAction', () => {
       duration: 100,
     } as d.CompilerBuildResults;
 
-    await telemetry.telemetryBuildFinishedAction(sys, config, logger, coreCompiler, results);
+    await telemetry.telemetryBuildFinishedAction(sys, config, coreCompiler, results);
     expect(spyShouldTrack).toHaveBeenCalled();
 
     spyShouldTrack.mockRestore();
@@ -39,14 +44,20 @@ describe('telemetryBuildFinishedAction', () => {
 });
 
 describe('telemetryAction', () => {
-  const config: d.InternalStrictConfig = {
-    outputTargets: [],
-    flags: {
-      args: [],
-    },
-  };
-  const logger = mockLogger();
-  const sys = createSystem();
+  let config: d.InternalStrictConfig;
+  let sys: d.CompilerSystem;
+
+  beforeEach(() => {
+    config = {
+      outputTargets: [],
+      flags: {
+        args: [],
+      },
+      logger: mockLogger(),
+    };
+
+    sys = createSystem();
+  });
 
   it('issues a network request when no async function is passed', async () => {
     const spyShouldTrack = jest.spyOn(shouldTrack, 'shouldTrack');
@@ -56,7 +67,7 @@ describe('telemetryAction', () => {
       })
     );
 
-    await telemetry.telemetryAction(sys, config, logger, coreCompiler, () => {});
+    await telemetry.telemetryAction(sys, config, coreCompiler, () => {});
     expect(spyShouldTrack).toHaveBeenCalled();
 
     spyShouldTrack.mockRestore();
@@ -70,7 +81,7 @@ describe('telemetryAction', () => {
       })
     );
 
-    await telemetry.telemetryAction(sys, config, logger, coreCompiler, async () => {
+    await telemetry.telemetryAction(sys, config, coreCompiler, async () => {
       new Promise((resolve) => {
         setTimeout(() => {
           resolve(true);

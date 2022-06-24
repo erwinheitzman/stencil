@@ -395,7 +395,7 @@ type Loose<T extends Object> = Record<string, any> & Partial<T>;
 export type UnvalidatedConfig = Loose<Config>;
 
 type WithRequired<T, K extends keyof T> = T & { [P in K]-?: T[P] };
-type RequiredFields = 'flags';
+type RequiredFields = 'flags'; // | 'logger';
 export type InternalStrictConfig = WithRequired<Config, RequiredFields>;
 
 export interface HydratedFlag {

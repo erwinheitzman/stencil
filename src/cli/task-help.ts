@@ -1,7 +1,7 @@
 import type * as d from '../declarations';
 import { taskTelemetry } from './task-telemetry';
 
-export const taskHelp = async (config: d.InternalStrictConfig, logger: d.Logger, sys?: d.CompilerSystem) => {
+export const taskHelp = async (flags: d.ConfigFlags, logger: d.Logger, sys?: d.CompilerSystem) => {
   const prompt = logger.dim(sys.details.platform === 'windows' ? '>' : '$');
 
   console.log(`
@@ -36,7 +36,7 @@ export const taskHelp = async (config: d.InternalStrictConfig, logger: d.Logger,
 
   // TODO(STENCIL-148) make this parameter no longer optional, remove the surrounding if statement
   if (sys) {
-    await taskTelemetry(config, sys, logger);
+    await taskTelemetry(flags, sys, logger);
   }
 
   console.log(`
