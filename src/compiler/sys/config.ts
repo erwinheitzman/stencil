@@ -4,11 +4,11 @@ import { createSystem } from './stencil-sys';
 import { setPlatformPath } from '../sys/modules/path';
 
 export const getConfig = (userConfig: d.Config): d.InternalStrictConfig => {
-  const config: d.InternalStrictConfig = { ...userConfig, flags: { ...(userConfig.flags ?? {}) } };
+  const flags = userConfig.flags ?? {};
+  // TODO: spread?
+  const logger = userConfig.logger ?? createLogger();
+  const config: d.InternalStrictConfig = { ...userConfig, flags, logger };
 
-  if (!config.logger) {
-    config.logger = createLogger();
-  }
   if (!config.sys) {
     config.sys = createSystem({ logger: config.logger });
   }

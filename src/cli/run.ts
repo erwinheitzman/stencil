@@ -16,6 +16,7 @@ import { taskTest } from './task-test';
 import { taskTelemetry } from './task-telemetry';
 import { telemetryAction } from './telemetry/telemetry';
 import { InternalStrictConfig } from '../declarations';
+import { createLogger } from '../compiler/sys/logger/console-logger';
 
 export const run = async (init: d.CliInitOptions) => {
   const { args, logger, sys } = init;
@@ -119,8 +120,10 @@ export const runTask = async (
   task: d.TaskCommand,
   sys?: d.CompilerSystem
 ) => {
+  // TODO: Validate this
+  const logger = config.logger ?? createLogger();
   config.flags = config.flags || { task };
-  const strictConfig: InternalStrictConfig = { ...config, flags: { ...config.flags } ?? { task } };
+  const strictConfig: InternalStrictConfig = { ...config, flags: { ...config.flags } ?? { task }, logger };
 
   config.outputTargets = config.outputTargets || [];
   strictConfig.outputTargets = strictConfig.outputTargets || [];
