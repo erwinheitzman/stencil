@@ -136,7 +136,6 @@ describe('prepareData', () => {
     flags: {
       args: [],
     },
-    logger: mockLogger(),
     outputTargets: [],
   };
   const sys = createSystem();
@@ -176,7 +175,6 @@ describe('prepareData', () => {
       flags: {
         args: [],
       },
-      logger: mockLogger(),
       outputTargets: [{ type: 'www', baseUrl: 'https://example.com', serviceWorker: { swDest: './tmp' } }],
     };
 
@@ -223,7 +221,6 @@ describe('prepareData', () => {
       flags: {
         args: [],
       },
-      logger: mockLogger(),
       outputTargets: [{ type: 'www', baseUrl: 'https://example.com', serviceWorker: { swDest: './tmp' } }],
     };
 
