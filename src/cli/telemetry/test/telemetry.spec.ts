@@ -39,6 +39,7 @@ describe('telemetryBuildFinishedAction', () => {
 });
 
 describe('telemetryAction', () => {
+  //TODO(NOW) mockInternalStrictConfig in this file TODO
   const config: d.InternalStrictConfig = {
     outputTargets: [],
     flags: {
