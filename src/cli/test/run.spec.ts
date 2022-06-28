@@ -1,11 +1,11 @@
 import type * as d from '../../declarations';
 import * as coreCompiler from '@stencil/core/compiler';
+import { mockCompilerSystem, mockConfig, mockLogger as createMockLogger } from '@stencil/core/testing';
 import * as ParseFlags from '../parse-flags';
 import { run, runTask } from '../run';
 import * as HelpTask from '../task-help';
 import * as TelemetryTask from '../task-telemetry';
 import { createTestingSystem } from '../../testing/testing-sys';
-import { mockCompilerSystem, mockConfig, mockLogger as createMockLogger } from '../../../testing';
 
 describe('run', () => {
   describe('run()', () => {
