@@ -99,6 +99,7 @@ describe('run', () => {
   describe('runTask()', () => {
     let sys: d.CompilerSystem;
     let unvalidatedConfig: d.Config;
+    let validatedConfig: d.Config;
 
     let taskBuildSpy: jest.SpyInstance<ReturnType<typeof BuildTask.taskBuild>, Parameters<typeof BuildTask.taskBuild>>;
     let taskDocsSpy: jest.SpyInstance<ReturnType<typeof DocsTask.taskDocs>, Parameters<typeof DocsTask.taskDocs>>;
@@ -123,6 +124,10 @@ describe('run', () => {
       sys.exit = jest.fn();
 
       unvalidatedConfig = mockConfig(sys);
+      unvalidatedConfig.outputTargets = null;
+
+      validatedConfig = mockConfig(sys);
+      validatedConfig.outputTargets = [];
 
       taskBuildSpy = jest.spyOn(BuildTask, 'taskBuild');
       taskBuildSpy.mockResolvedValue();
@@ -160,34 +165,85 @@ describe('run', () => {
       taskTestSpy.mockRestore();
     });
 
-    it('calls the help task', () => {
-      runTask(coreCompiler, unvalidatedConfig, 'help', sys);
+    it('calls the build task', async () => {
+      await runTask(coreCompiler, unvalidatedConfig, 'build', sys);
+
+      expect(taskBuildSpy).toHaveBeenCalledTimes(1);
+      expect(taskBuildSpy).toHaveBeenCalledWith(coreCompiler, validatedConfig, sys);
+    });
+
+    it('calls the docs task', async () => {
+      await runTask(coreCompiler, unvalidatedConfig, 'docs', sys);
+
+      expect(taskDocsSpy).toHaveBeenCalledTimes(1);
+      expect(taskDocsSpy).toHaveBeenCalledWith(coreCompiler, validatedConfig);
+    });
+
+    describe('generate task', () => {
+      it("calls the generate task for the argument 'generate'", async () => {
+        await runTask(coreCompiler, unvalidatedConfig, 'generate', sys);
+
+        expect(taskGenerateSpy).toHaveBeenCalledTimes(1);
+        expect(taskGenerateSpy).toHaveBeenCalledWith(coreCompiler, validatedConfig);
+      });
+
+      it("calls the generate task for the argument 'g'", async () => {
+        await runTask(coreCompiler, unvalidatedConfig, 'g', sys);
+
+        expect(taskGenerateSpy).toHaveBeenCalledTimes(1);
+        expect(taskGenerateSpy).toHaveBeenCalledWith(coreCompiler, validatedConfig);
+      });
+    });
+
+    it('calls the help task', async () => {
+      await runTask(coreCompiler, unvalidatedConfig, 'help', sys);
 
       expect(taskHelpSpy).toHaveBeenCalledTimes(1);
-      expect(taskHelpSpy).toHaveBeenCalledWith(unvalidatedConfig.flags, unvalidatedConfig.logger, sys);
+      expect(taskHelpSpy).toHaveBeenCalledWith(validatedConfig.flags, validatedConfig.logger, sys);
+    });
+
+    it('calls the prerender task', async () => {
+      await runTask(coreCompiler, unvalidatedConfig, 'prerender', sys);
+
+      expect(taskPrerenderSpy).toHaveBeenCalledTimes(1);
+      expect(taskPrerenderSpy).toHaveBeenCalledWith(coreCompiler, validatedConfig);
+    });
+
+    it('calls the serve task', async () => {
+      await runTask(coreCompiler, unvalidatedConfig, 'serve', sys);
+
+      expect(taskServeSpy).toHaveBeenCalledTimes(1);
+      expect(taskServeSpy).toHaveBeenCalledWith(validatedConfig);
     });
 
     describe('telemetry task', () => {
-      it('calls the telemetry task when a compiler system is present', () => {
-        runTask(coreCompiler, unvalidatedConfig, 'telemetry', sys);
+      it('calls the telemetry task when a compiler system is present', async () => {
+        await runTask(coreCompiler, unvalidatedConfig, 'telemetry', sys);
 
         expect(taskTelemetrySpy).toHaveBeenCalledTimes(1);
-        expect(taskTelemetrySpy).toHaveBeenCalledWith(unvalidatedConfig.flags, sys, unvalidatedConfig.logger);
+        expect(taskTelemetrySpy).toHaveBeenCalledWith(validatedConfig.flags, sys, validatedConfig.logger);
       });
 
-      it("does not call the telemetry task when a compiler system isn't present", () => {
-        runTask(coreCompiler, unvalidatedConfig, 'telemetry');
+      it("does not call the telemetry task when a compiler system isn't present", async () => {
+        await runTask(coreCompiler, unvalidatedConfig, 'telemetry');
 
         expect(taskTelemetrySpy).not.toHaveBeenCalled();
       });
     });
 
-    it('defaults to the help task for an unaccounted for task name', () => {
+    it('calls the test task', async () => {
+      await runTask(coreCompiler, unvalidatedConfig, 'test', sys);
+
+      expect(taskTestSpy).toHaveBeenCalledTimes(1);
+      expect(taskTestSpy).toHaveBeenCalledWith(validatedConfig);
+    });
+
+    it('defaults to the help task for an unaccounted for task name', async () => {
       // info is a valid task name, but isn't used in the `switch` statement of `runTask`
-      runTask(coreCompiler, unvalidatedConfig, 'info', sys);
+      await runTask(coreCompiler, unvalidatedConfig, 'info', sys);
 
       expect(taskHelpSpy).toHaveBeenCalledTimes(1);
-      expect(taskHelpSpy).toHaveBeenCalledWith(unvalidatedConfig.flags, unvalidatedConfig.logger, sys);
+      expect(taskHelpSpy).toHaveBeenCalledWith(validatedConfig.flags, validatedConfig.logger, sys);
     });
   });
 });
