@@ -3,8 +3,14 @@ import * as coreCompiler from '@stencil/core/compiler';
 import { mockCompilerSystem, mockConfig, mockLogger as createMockLogger } from '@stencil/core/testing';
 import * as ParseFlags from '../parse-flags';
 import { run, runTask } from '../run';
+import * as BuildTask from '../task-build';
+import * as DocsTask from '../task-docs';
+import * as GenerateTask from '../task-generate';
 import * as HelpTask from '../task-help';
+import * as PrerenderTask from '../task-prerender';
+import * as ServeTask from '../task-serve';
 import * as TelemetryTask from '../task-telemetry';
+import * as TestTask from '../task-test';
 import { createTestingSystem } from '../../testing/testing-sys';
 
 describe('run', () => {
@@ -92,11 +98,23 @@ describe('run', () => {
     let sys: d.CompilerSystem;
     let unvalidatedConfig: d.Config;
 
+    let taskBuildSpy: jest.SpyInstance<ReturnType<typeof BuildTask.taskBuild>, Parameters<typeof BuildTask.taskBuild>>;
+    let taskDocsSpy: jest.SpyInstance<ReturnType<typeof DocsTask.taskDocs>, Parameters<typeof DocsTask.taskDocs>>;
+    let taskGenerateSpy: jest.SpyInstance<
+      ReturnType<typeof GenerateTask.taskGenerate>,
+      Parameters<typeof GenerateTask.taskGenerate>
+    >;
     let taskHelpSpy: jest.SpyInstance<ReturnType<typeof HelpTask.taskHelp>, Parameters<typeof HelpTask.taskHelp>>;
+    let taskPrerenderSpy: jest.SpyInstance<
+      ReturnType<typeof PrerenderTask.taskPrerender>,
+      Parameters<typeof PrerenderTask.taskPrerender>
+    >;
+    let taskServeSpy: jest.SpyInstance<ReturnType<typeof ServeTask.taskServe>, Parameters<typeof ServeTask.taskServe>>;
     let taskTelemetrySpy: jest.SpyInstance<
       ReturnType<typeof TelemetryTask.taskTelemetry>,
       Parameters<typeof TelemetryTask.taskTelemetry>
     >;
+    let taskTestSpy: jest.SpyInstance<ReturnType<typeof TestTask.taskTest>, Parameters<typeof TestTask.taskTest>>;
 
     beforeEach(() => {
       sys = mockCompilerSystem();
@@ -104,15 +122,40 @@ describe('run', () => {
 
       unvalidatedConfig = mockConfig(sys);
 
+      taskBuildSpy = jest.spyOn(BuildTask, 'taskBuild');
+      taskBuildSpy.mockResolvedValue();
+
+      taskDocsSpy = jest.spyOn(DocsTask, 'taskDocs');
+      taskDocsSpy.mockResolvedValue();
+
+      taskGenerateSpy = jest.spyOn(GenerateTask, 'taskGenerate');
+      taskGenerateSpy.mockResolvedValue();
+
       taskHelpSpy = jest.spyOn(HelpTask, 'taskHelp');
-      taskHelpSpy.mockReturnValue(Promise.resolve());
+      taskHelpSpy.mockResolvedValue();
+
+      taskPrerenderSpy = jest.spyOn(PrerenderTask, 'taskPrerender');
+      taskPrerenderSpy.mockResolvedValue();
+
+      taskServeSpy = jest.spyOn(ServeTask, 'taskServe');
+      taskServeSpy.mockResolvedValue();
+
       taskTelemetrySpy = jest.spyOn(TelemetryTask, 'taskTelemetry');
-      taskTelemetrySpy.mockReturnValue(Promise.resolve());
+      taskTelemetrySpy.mockResolvedValue();
+
+      taskTestSpy = jest.spyOn(TestTask, 'taskTest');
+      taskTestSpy.mockResolvedValue();
     });
 
     afterEach(() => {
+      taskBuildSpy.mockRestore();
+      taskDocsSpy.mockRestore();
+      taskGenerateSpy.mockRestore();
       taskHelpSpy.mockRestore();
+      taskPrerenderSpy.mockRestore();
+      taskServeSpy.mockRestore();
       taskTelemetrySpy.mockRestore();
+      taskTestSpy.mockRestore();
     });
 
     it('calls the help task', () => {
