@@ -245,5 +245,15 @@ describe('run', () => {
       expect(taskHelpSpy).toHaveBeenCalledTimes(1);
       expect(taskHelpSpy).toHaveBeenCalledWith(validatedConfig.flags, validatedConfig.logger, sys);
     });
+
+    it('defaults to the provided task if no flags exist on the provided config', async () => {
+      unvalidatedConfig = mockConfig(sys);
+      unvalidatedConfig.flags = undefined;
+
+      await runTask(coreCompiler, unvalidatedConfig, 'help', sys);
+
+      expect(taskHelpSpy).toHaveBeenCalledTimes(1);
+      expect(taskHelpSpy).toHaveBeenCalledWith(validatedConfig.flags, validatedConfig.logger, sys);
+    });
   });
 });
