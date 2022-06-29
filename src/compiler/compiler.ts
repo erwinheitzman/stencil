@@ -22,6 +22,7 @@ export const createCompiler = async (userConfig: Config): Promise<Compiler> => {
   // actual compiler code
   // could be in a web worker on the browser
   // or the main thread in node
+  // TODO(NOW): Look into consoldiation of these funs
   const config = getConfig(userConfig);
   const diagnostics: Diagnostic[] = [];
   const sys = config.sys;
