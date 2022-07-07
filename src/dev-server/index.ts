@@ -60,14 +60,14 @@ function startServer(
       : null;
 
   let isActivelyBuilding = false;
-  let lastBuildResults: CompilerBuildResults = null;
-  let devServer: DevServer = null;
-  let removeWatcher: BuildOnEventRemove = null;
-  let closeResolve: () => void = null;
+  let lastBuildResults: CompilerBuildResults | null = null;
+  let devServer: DevServer | null = null;
+  let removeWatcher: BuildOnEventRemove | null = null;
+  let closeResolve: (() => void) | null = null;
   let hasStarted = false;
   let browserUrl = '';
 
-  let sendToWorker: (msg: DevServerMessage) => void = null;
+  let sendToWorker: ((msg: DevServerMessage) => void) | null = null;
 
   const closePromise = new Promise<void>((resolve) => (closeResolve = resolve));
 
@@ -190,7 +190,9 @@ function startServer(
         serverStarted(msg);
       } else if (msg.serverClosed) {
         logger.debug(`dev server closed: ${browserUrl}`);
-        closeResolve();
+        if (closeResolve) {
+          closeResolve();
+        }
       } else if (msg.requestBuildResults) {
         requestBuildResults();
       } else if (msg.compilerRequestPath) {
