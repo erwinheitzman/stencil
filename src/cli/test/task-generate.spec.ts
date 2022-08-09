@@ -1,6 +1,6 @@
 import type * as d from '../../declarations';
-import { taskGenerate, getBoilerplateByExtension, GenerableExtension, BoilerplateFile } from '../task-generate';
-import { mockConfig, mockStencilSystem } from '@stencil/core/testing';
+import { taskGenerate, getBoilerplateByExtension, BoilerplateFile } from '../task-generate';
+import { mockValidatedConfig, mockCompilerSystem } from '@stencil/core/testing';
 import * as utils from '../../utils/validation';
 
 import * as coreCompiler from '@stencil/core/compiler';
@@ -13,8 +13,8 @@ jest.mock('prompts', () => ({
 }));
 
 const setup = async () => {
-  const sys = mockStencilSystem();
-  const config: d.Config = mockConfig(sys);
+  const sys = mockCompilerSystem();
+  const config: d.ValidatedConfig = mockValidatedConfig(sys);
   config.configPath = '/testing-path';
   config.srcDir = '/src';
 
@@ -37,9 +37,11 @@ const setup = async () => {
 
 /**
  * Little test helper function which just temporarily silences
- * console.log calls so we can avoid spewing a bunch of stuff.
+ * console.log calls, so we can avoid spewing a bunch of stuff.
+ * @param coreCompiler the core compiler instance to forward to `taskGenerate`
+ * @param config the user-supplied config to forward to `taskGenerate`
  */
-async function silentGenerate(coreCompiler: CoreCompiler, config: d.Config) {
+async function silentGenerate(coreCompiler: CoreCompiler, config: d.ValidatedConfig): Promise<void> {
   const tmp = console.log;
   console.log = jest.fn();
   await taskGenerate(coreCompiler, config);

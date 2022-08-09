@@ -1,4 +1,4 @@
-import type { Config } from '../declarations';
+import type { Config, ValidatedConfig } from '../declarations';
 import type { CoreCompiler } from './load-compiler';
 import { IS_NODE_ENV } from '../compiler/sys/environment';
 import { validateComponentTag } from '@utils';
@@ -13,7 +13,7 @@ import { validateComponentTag } from '@utils';
  * mainly accessing the `path` module
  * @param config the user-supplied config, which we need here to access `.sys`.
  */
-export const taskGenerate = async (coreCompiler: CoreCompiler, config: Config): Promise<void> => {
+export const taskGenerate = async (coreCompiler: CoreCompiler, config: ValidatedConfig): Promise<void> => {
   if (!IS_NODE_ENV) {
     config.logger.error(`"generate" command is currently only implemented for a NodeJS environment`);
     return config.sys.exit(1);
@@ -70,7 +70,10 @@ export const taskGenerate = async (coreCompiler: CoreCompiler, config: Config): 
     return config.sys.exit(1);
   }
 
-  // TODO(STENCIL-424): Investigate moving these console.log calls to config.logger.info
+  // We use `console.log` here rather than our `config.logger` because we don't want
+  // our TUI messages to be prefixed with timestamps and so on.
+  //
+  // See STENCIL-424 for details.
   console.log();
   console.log(`${config.logger.gray('$')} stencil generate ${input}`);
   console.log();
@@ -216,7 +219,10 @@ export const getBoilerplateByExtension = (tagName: string, extension: GenerableE
 };
 
 /**
- * Get the boilerplate for a component.
+ * Get the boilerplate for a file containing the definition of a component
+ * @param tagName the name of the tag to give the component
+ * @param hasStyle designates if the component has an external stylesheet or not
+ * @returns the contents of a file that defines a component
  */
 const getComponentBoilerplate = (tagName: string, hasStyle: boolean): string => {
   const decorator = [`{`];
@@ -245,7 +251,8 @@ export class ${toPascalCase(tagName)} {
 };
 
 /**
- * Get the boilerplate for style.
+ * Get the boilerplate for style for a generated component
+ * @returns a boilerplate CSS block
  */
 const getStyleUrlBoilerplate = (): string =>
   `:host {
@@ -254,7 +261,9 @@ const getStyleUrlBoilerplate = (): string =>
 `;
 
 /**
- * Get the boilerplate for a spec test.
+ * Get the boilerplate for a file containing a spec (unit) test for a component
+ * @param tagName the name of the tag associated with the component under test
+ * @returns the contents of a file that unit tests a component
  */
 const getSpecTestBoilerplate = (tagName: string): string =>
   `import { newSpecPage } from '@stencil/core/testing';
@@ -278,17 +287,19 @@ describe('${tagName}', () => {
 `;
 
 /**
- * Get the boilerplate for an E2E test.
+ * Get the boilerplate for a file containing an end-to-end (E2E) test for a component
+ * @param tagName the name of the tag associated with the component under test
+ * @returns the contents of a file that E2E tests a component
  */
-const getE2eTestBoilerplate = (name: string): string =>
+const getE2eTestBoilerplate = (tagName: string): string =>
   `import { newE2EPage } from '@stencil/core/testing';
 
-describe('${name}', () => {
+describe('${tagName}', () => {
   it('renders', async () => {
     const page = await newE2EPage();
-    await page.setContent('<${name}></${name}>');
+    await page.setContent('<${tagName}></${tagName}>');
 
-    const element = await page.find('${name}');
+    const element = await page.find('${tagName}');
     expect(element).toHaveClass('hydrated');
   });
 });
@@ -296,6 +307,8 @@ describe('${name}', () => {
 
 /**
  * Convert a dash case string to pascal case.
+ * @param str the string to convert
+ * @returns the converted input as pascal case
  */
 const toPascalCase = (str: string): string =>
   str.split('-').reduce((res, part) => res + part[0].toUpperCase() + part.slice(1), '');

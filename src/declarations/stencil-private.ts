@@ -2028,9 +2028,9 @@ export interface CssImportData {
   srcImport: string;
   updatedImport?: string;
   url: string;
-  filePath?: string;
+  filePath: string;
   altFilePath?: string;
-  styleText?: string;
+  styleText?: string | null;
 }
 
 export interface CssToEsmImportData {
@@ -2040,6 +2040,9 @@ export interface CssToEsmImportData {
   filePath: string;
 }
 
+/**
+ * Input CSS to be transformed into ESM
+ */
 export interface TransformCssToEsmInput {
   input: string;
   module?: 'cjs' | 'esm' | string;
@@ -2124,6 +2127,9 @@ export interface Url {
 
 declare global {
   namespace jest {
+    /* eslint-disable-next-line @typescript-eslint/no-unused-vars --
+     * these type params need to be here for compatibility with Jest, but we aren't using them for anything
+     */
     interface Matchers<R, T> {
       /**
        * Compares HTML, but first normalizes the HTML so all
@@ -2632,6 +2638,7 @@ export interface TrackableData {
   build: string;
   stencil: string;
   has_app_pwa_config: boolean;
+  config: Config;
 }
 
 /**

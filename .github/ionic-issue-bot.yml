@@ -71,14 +71,13 @@ noReproduction:
   dryRun: false
 
 stale:
-  days: 180
+  days: 30
   maxIssuesPerRun: 100
   exemptLabels:
     - "Bug: Validated"
     - "Feature: Want this? Upvote it!"
     - good first issue
     - help wanted
-    - Reply Received
     - Request For Comments
     - "Resolution: Needs Investigation"
     - "Resolution: Refine"
