@@ -14,6 +14,30 @@ export class MockEvent {
   timeStamp: number;
   type: string;
 
+  // KeyboardEvent properties
+  code?: string;
+  key?: string;
+  location?: number;
+  repeat?: boolean;
+
+  // MouseEvent properties
+  screenX?: number;
+  screenY?: number;
+  clientX?: number;
+  clientY?: number;
+  button?: number;
+  buttons?: number;
+  relatedTarget?: EventTarget;
+
+  // KeyboardEvent and MouseEvent properties
+  altKey?: boolean;
+  ctrlKey?: boolean;
+  metaKey?: boolean;
+  shiftKey?: boolean;
+
+  // CustomEvent properties
+  detail?: any;
+
   constructor(type: string, eventInitDict?: EventInit) {
     if (typeof type !== 'string') {
       throw new Error(`Event type required`);
@@ -61,10 +85,10 @@ export class MockEvent {
 }
 
 export class MockCustomEvent extends MockEvent {
-  detail: any = null;
-
   constructor(type: string, customEventInitDic?: CustomEventInit) {
     super(type);
+
+    super.detail = null;
 
     if (customEventInitDic != null) {
       Object.assign(this, customEventInitDic);
@@ -73,17 +97,17 @@ export class MockCustomEvent extends MockEvent {
 }
 
 export class MockKeyboardEvent extends MockEvent {
-  code = '';
-  key = '';
-  altKey = false;
-  ctrlKey = false;
-  metaKey = false;
-  shiftKey = false;
-  location = 0;
-  repeat = false;
-
   constructor(type: string, keyboardEventInitDic?: KeyboardEventInit) {
     super(type);
+
+    super.code = '';
+    super.key = '';
+    super.altKey = false;
+    super.ctrlKey = false;
+    super.metaKey = false;
+    super.shiftKey = false;
+    super.location = 0;
+    super.repeat = false;
 
     if (keyboardEventInitDic != null) {
       Object.assign(this, keyboardEventInitDic);
@@ -92,20 +116,20 @@ export class MockKeyboardEvent extends MockEvent {
 }
 
 export class MockMouseEvent extends MockEvent {
-  screenX = 0;
-  screenY = 0;
-  clientX = 0;
-  clientY = 0;
-  ctrlKey = false;
-  shiftKey = false;
-  altKey = false;
-  metaKey = false;
-  button = 0;
-  buttons = 0;
-  relatedTarget: EventTarget = null;
-
   constructor(type: string, mouseEventInitDic?: MouseEventInit) {
     super(type);
+
+    super.screenX = 0;
+    super.screenY = 0;
+    super.clientX = 0;
+    super.clientY = 0;
+    super.ctrlKey = false;
+    super.shiftKey = false;
+    super.altKey = false;
+    super.metaKey = false;
+    super.button = 0;
+    super.buttons = 0;
+    super.relatedTarget = null;
 
     if (mouseEventInitDic != null) {
       Object.assign(this, mouseEventInitDic);
